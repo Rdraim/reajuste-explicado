@@ -8,7 +8,9 @@
 
 ![reajuste-explicado](assets/support/project-es-ar.svg)
 
-[![MIT](https://img.shields.io/github/license/Rdraim/reajuste-explicado?style=flat)](LICENSE) [![CI](https://img.shields.io/github/actions/workflow/status/Rdraim/reajuste-explicado/ci.yml?branch=main&label=CI&style=flat)](https://github.com/Rdraim/reajuste-explicado/actions) [![Release](https://img.shields.io/github/v/release/Rdraim/reajuste-explicado?style=flat)](https://github.com/Rdraim/reajuste-explicado/releases) [![Git](https://img.shields.io/github/last-commit/Rdraim/reajuste-explicado?label=Git&style=flat)](https://github.com/Rdraim/reajuste-explicado/commits/main) [![Stars](https://img.shields.io/github/stars/Rdraim/reajuste-explicado?style=social)](https://github.com/Rdraim/reajuste-explicado/stargazers) [![Forks](https://img.shields.io/github/forks/Rdraim/reajuste-explicado?style=social)](https://github.com/Rdraim/reajuste-explicado/forks)
+<!-- public-badges:start -->
+[![license](assets/support/badge-license.svg)](LICENSE) [![CI](assets/support/badge-ci.svg)](https://github.com/Rdraim/reajuste-explicado/actions) [![release](assets/support/badge-release.svg)](https://github.com/Rdraim/reajuste-explicado/releases)
+<!-- public-badges:end -->
 
 <p>
   <a href="https://github.com/Rdraim/reajuste-explicado/tree/main/examples"><img src="assets/support/action-0-es-ar.svg" height="40" width="200" alt="Ver ejemplos"></a>
