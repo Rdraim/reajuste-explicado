@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { round2, variacao, estatisticas, calcularReajuste, analisarPeriodos } from '../src/index.js';
 
 test('o índice é o que fecha com o total, não a média dos itens', () => {
-  const r = calcularReajuste({ totalAnt: 6680.27, totalNovo: 6689.32, pcts: [4.72] });
-  assert.equal(r.pct, 0.14);
-  assert.equal(r.delta, 9.05);
+  const r = calcularReajuste({ totalAnt: 1000, totalNovo: 1100, pcts: [20] });
+  assert.equal(r.pct, 10);
+  assert.equal(r.delta, 100);
 });
 
 test('variação sem base é null (não inventa 100%/0%)', () => {
@@ -15,16 +15,16 @@ test('variação sem base é null (não inventa 100%/0%)', () => {
 });
 
 test('mudança só de volume aparece como entrada, não como reajuste de preço', () => {
-  const ant = [{ id: 'a', valor: 599.70 }];
-  const novo = [{ id: 'a', valor: 599.70 }, { id: 'b', valor: 399.80 }];
+  const ant = [{ id: 'a', valor: 60 }];
+  const novo = [{ id: 'a', valor: 60 }, { id: 'b', valor: 40 }];
   const r = analisarPeriodos(ant, novo);
   assert.equal(r.pct, 66.67);
   assert.equal(r.pct_mesma_base, 0);
-  assert.equal(r.entraram_valor, 399.80);
+  assert.equal(r.entraram_valor, 40);
   assert.equal(r.sairam_valor, 0);
 });
 
-test('a moda é o índice contratual, não a média', () => {
+test('a moda descreve frequências sem comprovar contrato', () => {
   const e = estatisticas([5, 5, 5, 20]);
   assert.equal(e.mais_comum, 5);
   assert.equal(e.mais_comum_qtd, 3);

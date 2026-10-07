@@ -1,19 +1,40 @@
 {
   "name": "reajuste-explicado",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Índice de reajuste que fecha com o total, separando preço (mesma base) de volume (entradas e saídas). Lógica pura, zero dependências.",
   "type": "module",
   "main": "src/index.js",
   "exports": "./src/index.js",
-  "files": ["src", "README.md", "README.en-US.md", "README.es-AR.md", "LICENSE"],
+  "files": [
+    "src",
+    "README.md",
+    "README.en-US.md",
+    "README.es-AR.md",
+    "LICENSE"
+  ],
   "scripts": {
-    "test": "node --test"
+    "test": "node --test",
+    "check:public": "node tools/check-public-content.mjs"
   },
-  "keywords": ["reajuste", "indice", "percentual", "financeiro", "reconciliacao", "pt-br"],
+  "keywords": [
+    "reajuste",
+    "indice",
+    "percentual",
+    "financeiro",
+    "reconciliacao",
+    "pt-br"
+  ],
   "author": "Rodrigo Rodrigues",
   "license": "MIT",
-  "repository": { "type": "git", "url": "git+https://github.com/techrodrigo21-ux/reajuste-explicado.git" },
-  "bugs": { "url": "https://github.com/techrodrigo21-ux/reajuste-explicado/issues" },
-  "homepage": "https://github.com/techrodrigo21-ux/reajuste-explicado#readme",
-  "engines": { "node": ">=18" }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rdraim/reajuste-explicado.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Rdraim/reajuste-explicado/issues"
+  },
+  "homepage": "https://github.com/Rdraim/reajuste-explicado#readme",
+  "engines": {
+    "node": ">=22"
+  }
 }

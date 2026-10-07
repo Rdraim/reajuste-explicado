@@ -5,9 +5,7 @@
    Problema que resolve: muita tela mostra como "reajuste" a MÉDIA das variações
    item a item. Isso dá dois erros clássicos:
 
-   1. O número não fecha com o total. Um total que vai de 6.680,27 para 6.689,32
-      variou 0,14%, não os 4,72% aplicados em poucos itens. O índice certo é o
-      que, aplicado ao total anterior, chega no total novo.
+   1. A média por item não representa a variação ponderada do total.
    2. Quando a diferença vem de item que ENTROU ou SAIU (volume, não preço),
       nenhum item "muda de valor" e a média diz "0%" — escondendo a variação.
 
@@ -15,24 +13,32 @@
    (preço puro, só os itens presentes nos dois períodos), mais o que entrou/saiu.
    ============================================================================ */
 
-/** Arredonda a 2 casas, como contrato e boletim usam. */
-export const round2 = (n) => Math.round(((Number(n) || 0) + Number.EPSILON) * 100) / 100;
-
+/** Valores devem ser finitos; entradas inválidas nunca viram zero silenciosamente. */
+const numero = (n) => {
+  if (typeof n !== 'number' && (typeof n !== 'string' || !n.trim())) throw new TypeError('Valor numérico obrigatório');
+  const v = Number(n);
+  if (!Number.isFinite(v)) throw new TypeError('Valor deve ser finito');
+  return v;
+};
+export const round2 = (n) => {
+  const v = numero(n);
+  if (Math.abs(v) > Number.MAX_SAFE_INTEGER / 100) throw new RangeError('Valor excede precisão em centavos');
+  return Math.sign(v) * Math.round((Math.abs(v) + Number.EPSILON) * 100) / 100;
+};
 const pct2 = round2;
 
 /** Variação percentual de `de` para `para`, 2 casas. `null` quando não há base
    (sem base, "+100%" ou "0%" seria inventado). */
 export function variacao(de, para) {
-  const base = Number(de) || 0;
+  const base = numero(de);
+  const destino = numero(para);
   if (base <= 0) return null;
-  return pct2(((Number(para) || 0) / base - 1) * 100);
+  return pct2((destino / base - 1) * 100);
 }
 
-/** Estatísticas das variações item a item. A MODA é o índice contratual: ao
-   reajustar por contrato aplica-se o mesmo percentual em vários itens, e é ele
-   que se repete; a média se deixa levar por um único item trocado. */
+/** Estatísticas descritivas; a moda não comprova índice contratual. */
 export function estatisticas(pcts) {
-  const lista = (pcts || []).filter((p) => typeof p === 'number' && !Number.isNaN(p));
+  const lista = (pcts || []).filter((p) => typeof p === 'number' && Number.isFinite(p));
   if (!lista.length) return null;
   const ord = [...lista].sort((a, b) => a - b);
   const cont = {};
@@ -41,7 +47,7 @@ export function estatisticas(pcts) {
   return {
     mais_comum: Number(moda),
     mais_comum_qtd: qtd,
-    mediana: pct2(ord[Math.floor(ord.length / 2)]),
+    mediana: pct2(ord.length % 2 ? ord[Math.floor(ord.length / 2)] : (ord[ord.length / 2 - 1] + ord[ord.length / 2]) / 2),
     media: pct2(lista.reduce((s, x) => s + x, 0) / lista.length),
   };
 }
@@ -56,7 +62,7 @@ export function calcularReajuste({
   const ant = round2(totalAnt);
   const novo = round2(totalNovo);
   return {
-    pct: variacao(ant, novo),               // o índice que fecha a conta
+    pct: variacao(ant, novo),               // variação percentual arredondada
     total_ant: ant,
     total_novo: novo,
     delta: round2(novo - ant),
@@ -73,8 +79,19 @@ export function calcularReajuste({
 /** Conveniência: recebe os itens dos dois períodos ([{ id, valor }]) e deriva
    totais, mesma base (itens nos dois), entradas/saídas e variações item a item. */
 export function analisarPeriodos(anterior = [], novo = []) {
-  const mapA = new Map(anterior.map((i) => [String(i.id), Number(i.valor) || 0]));
-  const mapB = new Map(novo.map((i) => [String(i.id), Number(i.valor) || 0]));
+  const indexar = (itens) => {
+    if (!Array.isArray(itens)) throw new TypeError('Período deve ser uma lista');
+    const mapa = new Map();
+    for (const i of itens) {
+      if (!i || !['string', 'number'].includes(typeof i.id) || !String(i.id).trim()) throw new TypeError('Item sem identificador');
+      const id = String(i.id);
+      if (mapa.has(id)) throw new TypeError('Identificador duplicado: ' + id);
+      mapa.set(id, numero(i.valor));
+    }
+    return mapa;
+  };
+  const mapA = indexar(anterior);
+  const mapB = indexar(novo);
   let baseAnt = 0, baseNovo = 0, valorEntraram = 0, valorSairam = 0;
   const pcts = [];
   for (const [id, va] of mapA) {

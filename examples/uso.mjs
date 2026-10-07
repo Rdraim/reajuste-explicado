@@ -7,4 +7,4 @@ const depois = [{ id: 'item-1', valor: 225 }, { id: 'item-2', valor: 225 }, { id
 console.log('analisarPeriodos:', analisarPeriodos(antes, depois));
 
 // Ou direto dos totais, quando você já os tem somados:
-console.log('calcularReajuste:', calcularReajuste({ totalAnt: 6680.27, totalNovo: 6689.32, pcts: [4.72] }));
+console.log('calcularReajuste:', calcularReajuste({ totalAnt: 1000, totalNovo: 1100, pcts: [20] }));
