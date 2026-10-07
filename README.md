@@ -9,7 +9,7 @@
 ![reajuste-explicado](assets/support/project-pt-br.svg)
 
 <!-- public-badges:start -->
-[![license](assets/support/badge-license.svg)](LICENSE) [![CI](assets/support/badge-ci.svg)](https://github.com/Rdraim/reajuste-explicado/actions) [![release](assets/support/badge-release.svg)](https://github.com/Rdraim/reajuste-explicado/releases)
+[![license](assets/support/badge-license.svg)](LICENSE) [![CI](assets/support/badge-ci.svg)](https://github.com/Rdraim/reajuste-explicado/actions) [![release](assets/support/badge-release.svg)](https://github.com/Rdraim/reajuste-explicado/releases) [![Git](assets/support/badge-git.svg)](https://github.com/Rdraim/reajuste-explicado/commits/main)
 <!-- public-badges:end -->
 
 <p>
