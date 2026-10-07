@@ -18,7 +18,7 @@
 
 
 
-Un índice de ajuste de precios que **cierra con el total** — distinguiendo **precio** de **volumen**. Lógica pura, sin dependencias, Node y navegador.
+Un índice de ajuste de precios que **explica la variación del total** — distinguiendo **precio** de **volumen**. Lógica pura, sin dependencias, Node y navegador.
 
 ## El problema
 
@@ -66,12 +66,12 @@ calcularReajuste({ totalAnt: 1000, totalNovo: 1100, pcts: [20] });
 | `estatisticas(pcts)` | `{ mais_comum, mais_comum_qtd, mediana, media }` de las variaciones |
 | `round2(n)` | redondeo financiero a 2 decimales |
 
-Campos de salida: `pct` (variación del total), `pct_mesma_base` (solo precio), `entraram_valor` / `sairam_valor` (volumen), `delta`, `por_item` (estadísticas; la **moda** es el índice contractual que se repite).
+Campos de salida: `pct` (variación del total), `pct_mesma_base` (solo precio), `entraram_valor` / `sairam_valor` (volumen), `delta`, `por_item` (estadísticas; la **moda** describe el porcentaje más frecuente).
 
 ## Limitaciones
 
 - Trabaja con **números ya normalizados** (no parsea moneda ni cambio).
-- `round2` usa dos decimales por convención contractual.
+- `round2` redondea a dos decimales; conciliá con delta y totales, no con el porcentaje redondeado.
 - La identidad del ítem es su `id`: son "la misma base" solo cuando el `id` coincide en ambos períodos.
 
 ## Tests

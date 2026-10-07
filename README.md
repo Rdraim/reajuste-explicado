@@ -18,7 +18,7 @@
 
 
 
-Índice de reajuste que **fecha com o total** — separando o que é **preço** do que é **volume**. Lógica pura, sem dependências, Node e navegador.
+Índice de reajuste que **explica a variação do total** — separando o que é **preço** do que é **volume**. Lógica pura, sem dependências, Node e navegador.
 
 ## O problema
 
@@ -77,7 +77,7 @@ Campos da saída: `pct` (variação do total), `pct_mesma_base` (preço puro), `
 ## Limitações
 
 - Trabalha com **números já normalizados** (não faz parsing de moeda nem câmbio).
-- `round2` usa duas casas por convenção contratual; mais casas dariam um índice que não reproduz o total na conta à mão.
+- `round2` arredonda a duas casas; use delta e totais para conciliar, não o percentual arredondado.
 - Identidade do item é a sua `id`: itens só são "a mesma base" quando têm a mesma `id` nos dois períodos.
 
 ## Testes

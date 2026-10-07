@@ -18,7 +18,7 @@
 
 
 
-A price-adjustment index that **reconciles with the total** — telling **price** apart from **volume**. Pure logic, zero dependencies, Node and browser.
+A price-adjustment index that **explains changes in the total** — telling **price** apart from **volume**. Pure logic, zero dependencies, Node and browser.
 
 ## The problem
 
@@ -66,12 +66,12 @@ calcularReajuste({ totalAnt: 1000, totalNovo: 1100, pcts: [20] });
 | `estatisticas(pcts)` | `{ mais_comum, mais_comum_qtd, mediana, media }` of per-item changes |
 | `round2(n)` | 2-decimal financial rounding |
 
-Output fields: `pct` (total change), `pct_mesma_base` (price only), `entraram_valor` / `sairam_valor` (volume), `delta`, `por_item` (stats; the **mode** is the contractual index that repeats).
+Output fields: `pct` (total change), `pct_mesma_base` (price only), `entraram_valor` / `sairam_valor` (volume), `delta`, `por_item` (stats; the **mode** describes the most frequent percentage).
 
 ## Limitations
 
 - Works with **already-normalized numbers** (no currency parsing or FX).
-- `round2` uses two decimals by contractual convention.
+- `round2` rounds to two decimals; reconcile with delta and totals, not the rounded percentage.
 - Item identity is its `id`: items are the "same base" only when the `id` matches in both periods.
 
 ## Tests

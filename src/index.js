@@ -62,7 +62,7 @@ export function calcularReajuste({
   const ant = round2(totalAnt);
   const novo = round2(totalNovo);
   return {
-    pct: variacao(ant, novo),               // o índice que fecha a conta
+    pct: variacao(ant, novo),               // variação percentual arredondada
     total_ant: ant,
     total_novo: novo,
     delta: round2(novo - ant),
