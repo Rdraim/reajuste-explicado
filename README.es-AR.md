@@ -65,16 +65,21 @@ calcularReajuste({ totalAnt: 1000, totalNovo: 1100, pcts: [20] });
 | `analisarPeriodos(anterior, actual)` | toma `[{ id, valor }]` de ambos períodos y deriva todo |
 | `calcularReajuste({ totalAnt, totalNovo, pcts, baseAnt, baseNovo, valorEntraram, valorSairam })` | índice desde totales ya sumados |
 | `variacao(de, a)` | variación porcentual (2 decimales); `null` sin base |
-| `estatisticas(pcts)` | `{ mais_comum, mais_comum_qtd, mediana, media }` de las variaciones |
+| `estatisticas(pcts)` | `{ mais_comum, mais_comum_qtd, mais_comum_exato_qtd, mais_comum_grupo, percentuais_diferentes, mediana, media }` de las variaciones |
 | `round2(n)` | redondeo financiero a 2 decimales |
 
 Campos de salida: `pct` (variación del total), `pct_mesma_base` (solo precio), `entraram_valor` / `sairam_valor` (volumen), `delta`, `por_item` (estadísticas; la **moda** describe el porcentaje más frecuente).
+
+### La moda (`mais_comum`)
+
+La moda agrupa las variaciones por 1 decimal (`toFixed(1)`) y devuelve el valor de **2 decimales** más frecuente dentro del grupo ganador: `[4.39, 4.39, 4.4]` da `mais_comum: 4.39` (grupo `4.4`, `mais_comum_qtd: 3`, `mais_comum_exato_qtd: 2`). Los desempates no dependen del orden de entrada: entre grupos, más ítems y después el grupo de menor valor; dentro del grupo, el más frecuente, después el más cercano al promedio del grupo y, por último, el menor. `percentuais_diferentes` es `true` cuando hay más de un valor distinto (comparado con 2 decimales).
 
 ## Limitaciones
 
 - Trabaja con **números ya normalizados** (no parsea moneda ni cambio).
 - `round2` redondea a dos decimales; conciliá con delta y totales, no con el porcentaje redondeado.
 - La identidad del ítem es su `id`: son "la misma base" solo cuando el `id` coincide en ambos períodos.
+- El grupo de la moda sale de `toFixed(1)` sobre el número binario: el literal `4.15` cae en el grupo `4.2`, mientras que una variación cruda como `4.1496` (4,15 con 2 decimales) cae en `4.1`.
 
 ## Tests
 

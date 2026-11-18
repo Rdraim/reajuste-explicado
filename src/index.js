@@ -36,19 +36,57 @@ export function variacao(de, para) {
   return pct2((destino / base - 1) * 100);
 }
 
-/** Estatísticas descritivas; a moda não comprova índice contratual. */
+/* Distâncias comparadas em passos de 1e-9: ruído de ponto flutuante não decide empate. */
+const distancia = (a, b) => Math.round(Math.abs(a - b) * 1e9);
+
+/** Estatísticas descritivas; a moda não comprova índice contratual.
+
+   A moda AGRUPA por 1 casa e DEVOLVE com 2. O agrupamento junta variações que
+   diferem só pelo arredondamento do centavo (4,14 e 4,1496 caem no grupo 4,1).
+   Devolver a chave do grupo, porém, mostraria um percentual que nenhum item
+   teve (4,39 virava 4,4; 4,14 virava 4,1). `mais_comum` é o valor de 2 casas
+   mais frequente DENTRO do grupo vencedor; `mais_comum_qtd` segue contando o
+   grupo inteiro.
+
+   O resultado não depende da ordem de entrada:
+   - entre grupos: mais itens; empatados, o grupo de valor menor;
+   - dentro do grupo: mais frequente; empatados, o mais próximo da média do
+     grupo; persistindo, o menor. */
 export function estatisticas(pcts) {
   const lista = (pcts || []).filter((p) => typeof p === 'number' && Number.isFinite(p));
   if (!lista.length) return null;
   const ord = [...lista].sort((a, b) => a - b);
-  const cont = {};
-  for (const p of lista) { const k = p.toFixed(1); cont[k] = (cont[k] || 0) + 1; }
-  const [moda, qtd] = Object.entries(cont).sort((a, b) => b[1] - a[1])[0];
+  /* Percorre a lista ORDENADA: grupos e contagens saem iguais para qualquer ordem. */
+  const grupos = new Map();
+  const distintos = new Set();
+  for (const p of ord) {
+    const chave = p.toFixed(1);
+    const g = grupos.get(chave) || { chave, menor: p, qtd: 0, exatos: new Map() };
+    const exato = pct2(p);
+    g.qtd += 1;
+    g.exatos.set(exato, (g.exatos.get(exato) || 0) + 1);
+    grupos.set(chave, g);
+    distintos.add(exato);
+  }
+  /* `menor` só separa "-0.0" de "0.0", que têm o mesmo valor numérico. */
+  const vencedor = [...grupos.values()].sort((a, b) => (b.qtd - a.qtd)
+    || (Number(a.chave) - Number(b.chave))
+    || (a.menor - b.menor))[0];
+  const exatos = [...vencedor.exatos.entries()];
+  const mediaGrupo = exatos.reduce((s, [v, q]) => s + v * q, 0) / vencedor.qtd;
+  exatos.sort((a, b) => (b[1] - a[1])
+    || (distancia(a[0], mediaGrupo) - distancia(b[0], mediaGrupo))
+    || (a[0] - b[0]));
+  const [maisComum, maisComumExatoQtd] = exatos[0];
   return {
-    mais_comum: Number(moda),
-    mais_comum_qtd: qtd,
+    mais_comum: maisComum,                      // 2 casas: o valor que os itens tiveram
+    mais_comum_qtd: vencedor.qtd,               // itens no grupo vencedor (1 casa)
+    mais_comum_exato_qtd: maisComumExatoQtd,    // itens com exatamente `mais_comum`
+    mais_comum_grupo: Number(vencedor.chave),   // chave do grupo vencedor (1 casa)
+    percentuais_diferentes: distintos.size > 1, // mais de um valor distinto (2 casas)
     mediana: pct2(ord.length % 2 ? ord[Math.floor(ord.length / 2)] : (ord[ord.length / 2 - 1] + ord[ord.length / 2]) / 2),
-    media: pct2(lista.reduce((s, x) => s + x, 0) / lista.length),
+    /* Somada em ordem crescente: a ordem de entrada não muda o arredondamento. */
+    media: pct2(ord.reduce((s, x) => s + x, 0) / ord.length),
   };
 }
 

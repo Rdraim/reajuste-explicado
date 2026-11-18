@@ -65,16 +65,21 @@ calcularReajuste({ totalAnt: 1000, totalNovo: 1100, pcts: [20] });
 | `analisarPeriodos(previous, current)` | takes `[{ id, valor }]` for both periods and derives everything |
 | `calcularReajuste({ totalAnt, totalNovo, pcts, baseAnt, baseNovo, valorEntraram, valorSairam })` | index from pre-summed totals |
 | `variacao(from, to)` | percentage change (2 decimals); `null` with no base |
-| `estatisticas(pcts)` | `{ mais_comum, mais_comum_qtd, mediana, media }` of per-item changes |
+| `estatisticas(pcts)` | `{ mais_comum, mais_comum_qtd, mais_comum_exato_qtd, mais_comum_grupo, percentuais_diferentes, mediana, media }` of per-item changes |
 | `round2(n)` | 2-decimal financial rounding |
 
 Output fields: `pct` (total change), `pct_mesma_base` (price only), `entraram_valor` / `sairam_valor` (volume), `delta`, `por_item` (stats; the **mode** describes the most frequent percentage).
+
+### The mode (`mais_comum`)
+
+The mode groups changes by 1 decimal (`toFixed(1)`) and returns the most frequent **2-decimal** value inside the winning group: `[4.39, 4.39, 4.4]` gives `mais_comum: 4.39` (group `4.4`, `mais_comum_qtd: 3`, `mais_comum_exato_qtd: 2`). Tie-breaks do not depend on input order: between groups, more items, then the lower-valued group; inside the group, the most frequent, then the closest to the group mean, then the lowest. `percentuais_diferentes` is `true` when there is more than one distinct value (compared at 2 decimals).
 
 ## Limitations
 
 - Works with **already-normalized numbers** (no currency parsing or FX).
 - `round2` rounds to two decimals; reconcile with delta and totals, not the rounded percentage.
 - Item identity is its `id`: items are the "same base" only when the `id` matches in both periods.
+- The mode group comes from `toFixed(1)` on the binary number: the literal `4.15` lands in group `4.2`, while a raw change such as `4.1496` (4.15 at 2 decimals) lands in `4.1`.
 
 ## Tests
 

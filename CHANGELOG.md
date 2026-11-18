@@ -6,6 +6,17 @@
 
 # Histórico
 
+## 2.1.0 — 2026-11-18
+
+Correção: `estatisticas().mais_comum` devolvia a chave do grupo de 1 casa (4,39 virava 4,4; 4,14 virava 4,1). Agora devolve o valor de 2 casas mais frequente dentro do grupo vencedor; o agrupamento por 1 casa e `mais_comum_qtd` (contagem do grupo) seguem iguais.
+
+- Campos novos, aditivos: `mais_comum_exato_qtd`, `mais_comum_grupo` e `percentuais_diferentes`.
+- Desempates determinísticos, sem depender da ordem de entrada: entre grupos, mais itens e depois o grupo de valor menor; dentro do grupo, o mais frequente, depois o mais próximo da média do grupo e, por fim, o menor.
+- A média passa a ser somada em ordem crescente, para que a ordem de entrada não mude o arredondamento.
+- Valores não finitos continuam descartados.
+
+Quem usava `mais_comum` como chave de 1 casa deve passar a ler `mais_comum_grupo`.
+
 ## 2.0.0 — 2026-10-07
 
 Mudança principal: Node >=22 e validação mais estrita de entradas inválidas. Migre exemplos para importação local.

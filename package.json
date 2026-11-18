@@ -1,6 +1,6 @@
 {
   "name": "reajuste-explicado",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Índice de reajuste que fecha com o total, separando preço (mesma base) de volume (entradas e saídas). Lógica pura, zero dependências.",
   "type": "module",
   "main": "src/index.js",

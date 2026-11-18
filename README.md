@@ -71,16 +71,21 @@ calcularReajuste({ totalAnt: 1000, totalNovo: 1100, pcts: [20] });
 | `analisarPeriodos(anterior, novo)` | recebe `[{ id, valor }]` dos dois períodos e deriva tudo |
 | `calcularReajuste({ totalAnt, totalNovo, pcts, baseAnt, baseNovo, valorEntraram, valorSairam })` | índice a partir de totais já somados |
 | `variacao(de, para)` | variação percentual (2 casas); `null` se não há base |
-| `estatisticas(pcts)` | `{ mais_comum, mais_comum_qtd, mediana, media }` das variações item a item |
+| `estatisticas(pcts)` | `{ mais_comum, mais_comum_qtd, mais_comum_exato_qtd, mais_comum_grupo, percentuais_diferentes, mediana, media }` das variações item a item |
 | `round2(n)` | arredondamento financeiro a 2 casas |
 
 Campos da saída: `pct` (variação do total), `pct_mesma_base` (preço puro), `entraram_valor` / `sairam_valor` (volume), `delta`, `por_item` (estatísticas; a **moda** descreve o percentual mais frequente).
+
+### A moda (`mais_comum`)
+
+A moda agrupa as variações por 1 casa (`toFixed(1)`) e devolve o valor de **2 casas** mais frequente dentro do grupo vencedor: `[4.39, 4.39, 4.4]` dá `mais_comum: 4.39` (grupo `4.4`, `mais_comum_qtd: 3`, `mais_comum_exato_qtd: 2`). Os desempates não dependem da ordem de entrada: entre grupos, mais itens e depois o grupo de valor menor; dentro do grupo, o mais frequente, depois o mais próximo da média do grupo e, por fim, o menor. `percentuais_diferentes` é `true` quando há mais de um valor distinto (comparado com 2 casas).
 
 ## Limitações
 
 - Trabalha com **números já normalizados** (não faz parsing de moeda nem câmbio).
 - `round2` arredonda a duas casas; use delta e totais para conciliar, não o percentual arredondado.
 - Identidade do item é a sua `id`: itens só são "a mesma base" quando têm a mesma `id` nos dois períodos.
+- O grupo da moda vem de `toFixed(1)` sobre o número binário: o literal `4.15` cai no grupo `4.2`, enquanto uma variação bruta como `4.1496` (4,15 com 2 casas) cai no `4.1`.
 
 ## Testes
 
